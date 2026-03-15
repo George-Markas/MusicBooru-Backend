@@ -11,6 +11,7 @@ import com.example.musicbooru.util.ContentUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -52,8 +53,12 @@ public class PlaylistService {
                 || requester.getRole().equals(Role.ADMIN));
     }
 
-    public List<Playlist> getPlaylistsByOwner(User owner) {
-        return playlistRepository.findByOwner(owner);
+    @Transactional
+    public List<PlaylistResponse> getPlaylistsByOwner(User owner) {
+        return playlistRepository.findByOwner(owner)
+                .stream()
+                .map(PlaylistResponse::from)
+                .toList();
     }
 
     public Playlist createPlaylist(User owner, String name) {

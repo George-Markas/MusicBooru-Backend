@@ -3,10 +3,18 @@ package com.example.musicbooru.repository;
 import com.example.musicbooru.model.Playlist;
 import com.example.musicbooru.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface PlaylistRepository extends JpaRepository<Playlist, UUID> {
-    List<Playlist> findByOwner(User owner);
+    @Query(value = """
+            SELECT DISTINCT p
+            FROM Playlist p
+                     LEFT JOIN FETCH p.entries e LEFT JOIN FETCH e.track
+            WHERE p.owner = :owner
+            """)
+    List<Playlist> findByOwner(@Param("owner") User owner);
 }

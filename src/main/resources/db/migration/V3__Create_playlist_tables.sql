@@ -9,9 +9,9 @@ CREATE TABLE playlist
 
 CREATE TABLE playlist_entry
 (
-    id          UUID    NOT NULL,
-    playlist_id UUID    NOT NULL,
-    track_id    UUID    NOT NULL,
+    id          UUID                     NOT NULL,
+    playlist_id UUID                     NOT NULL,
+    track_id    UUID                     NOT NULL,
     added_on    TIMESTAMP WITH TIME ZONE NOT NULL,
     CONSTRAINT pk_playlist_entry PRIMARY KEY (id),
     CONSTRAINT fk_pe_playlist FOREIGN KEY (playlist_id) REFERENCES playlist (id) ON DELETE CASCADE,

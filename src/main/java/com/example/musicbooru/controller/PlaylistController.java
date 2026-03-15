@@ -42,7 +42,7 @@ public class PlaylistController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Playlist>> getPlaylists(@AuthenticationPrincipal User user) {
+    public ResponseEntity<List<PlaylistResponse>> getPlaylists(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(playlistService.getPlaylistsByOwner(user));
     }
 
