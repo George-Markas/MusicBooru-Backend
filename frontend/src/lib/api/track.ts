@@ -60,3 +60,13 @@ export async function get_track_art(id: string): Promise<Result<Blob>> {
 
     return response;
 }
+
+export async function stream_track(id: string): Promise<Result<Blob>> {
+    const path = `stream/${id}`
+
+    const response = await api<Blob>(path, {
+        method: 'GET',
+    }, {params: '', as: 'blob'});
+
+    return response;
+}

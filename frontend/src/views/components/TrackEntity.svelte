@@ -1,10 +1,23 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import { type Track, get_track_art } from "../../lib/api/track";
+    import { getContext, onDestroy, onMount } from "svelte";
+    import { type Track, get_track_art, stream_track } from "../../lib/api/track";
 
 
     let cover = $state<string>('');
     let { trackData } = $props<{ trackData: Track }>();
+
+    const stream = getContext<{objectUrl: string}>('stream');
+    async function getStream(url: string) {
+        try {
+            if (stream.objectUrl) {URL.revokeObjectURL(stream.objectUrl)}
+            const response = await stream_track(url);
+            if (response.ok) {
+                stream.objectUrl = URL.createObjectURL(response.data);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     onMount(async () => {
         try {
@@ -19,9 +32,13 @@
 
     })
 
+    onDestroy(async () => {
+        if (cover) {
+            URL.revokeObjectURL(cover);
+        }});
 </script>
 
-<button>
+<button onclick={() => getStream(trackData.id)}>
     <img src={cover} alt="cover"/>
     <span>{trackData.title}</span>
 </button>
