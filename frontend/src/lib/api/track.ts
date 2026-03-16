@@ -51,7 +51,7 @@ export async function get_track(id: string): Promise<Result<Track>> {
 }
 
 export async function get_track_art(id: string): Promise<Result<Blob>> {
-    const path = `track/art/${id}`
+    const path = `track/${id}/art`
 
     const response = await api<Blob>(path, {
         method: 'GET',
