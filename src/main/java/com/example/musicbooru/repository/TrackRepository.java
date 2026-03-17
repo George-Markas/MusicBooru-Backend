@@ -32,9 +32,9 @@ public interface TrackRepository extends JpaRepository<Track, UUID> {
                     t.title  ILIKE '%' || :query || '%'
                     OR t.artist ILIKE '%' || :query || '%'
                     OR t.album  ILIKE '%' || :query || '%'
-                    OR word_similarity(:query, COALESCE(t.title, ''))  > 0.3
-                    OR word_similarity(:query, COALESCE(t.artist, '')) > 0.3
-                    OR word_similarity(:query, COALESCE(t.album, ''))  > 0.3
+                    OR word_similarity(:query, COALESCE(t.title, ''))  > LEAST(0.1 + LENGTH(:query) * 0.06, 0.5)
+                    OR word_similarity(:query, COALESCE(t.artist, '')) > LEAST(0.1 + LENGTH(:query) * 0.06, 0.5)
+                    OR word_similarity(:query, COALESCE(t.album, ''))  > LEAST(0.1 + LENGTH(:query) * 0.06, 0.5)
                 ORDER BY t.id
             ) ranked
             ORDER BY relevance DESC
