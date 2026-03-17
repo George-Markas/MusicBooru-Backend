@@ -1,6 +1,7 @@
 package com.example.musicbooru.auth;
 
 import com.example.musicbooru.exception.GenericException;
+import com.example.musicbooru.model.Role;
 import com.example.musicbooru.model.User;
 import com.example.musicbooru.model.UserAuthView;
 import com.example.musicbooru.repository.UserRepository;
@@ -23,6 +24,10 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+
+    public Role getUserRole(User user) {
+        return user.getRole();
+    }
 
     public AuthenticationResponse register(RegisterRequest request) {
         User user = User.builder()
