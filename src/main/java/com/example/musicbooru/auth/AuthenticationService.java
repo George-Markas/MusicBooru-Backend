@@ -15,8 +15,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -27,11 +25,15 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    public Role getUserRole(User user) {
+        return user.getRole();
+    }
+
     public AuthenticationResponse register(RegisterRequest request) {
         User user = User.builder()
                 .username(request.username())
                 .password(passwordEncoder.encode(request.password()))
-                .role(Role.USER)
+                .role(request.role())
                 .build();
 
         if (userRepository.existsByUsername(user.getUsername())) {
@@ -61,13 +63,10 @@ public class AuthenticationService {
             throw new GenericException("Incorrect username or password", HttpStatus.UNAUTHORIZED);
         }
 
-        // TODO Evaluate whether this check is needed or not
-        Optional<UserAuthView> userAuth = authViewRepository.findByUsername(request.username());
-        if (userAuth.isEmpty()) {
-            throw new GenericException("Incorrect username or password", HttpStatus.UNAUTHORIZED);
-        }
+        UserAuthView userAuthView = authViewRepository.findByUsername(request.username())
+                .orElseThrow(() -> new GenericException("Incorrect username or password", HttpStatus.UNAUTHORIZED));
 
-        String jwtToken = jwtService.generateToken(userAuth.get());
+        String jwtToken = jwtService.generateToken(userAuthView);
         String jwtCookieString = jwtService.cookieFromToken(jwtToken);
 
         return new AuthenticationResponse(
