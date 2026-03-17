@@ -1,16 +1,18 @@
 <script lang="ts">
-    import { getContext, onMount, setContext } from "svelte";
     import { type AppState } from "../lib/api/common";
-    import { logout } from "../lib/api/auth"
     import { type Track, get_tracks, search_tracks, sort_tracks, stream_track} from "../lib/api/track";
-    import TrackEntity from "./components/TrackEntity.svelte";
+
+    import { getContext, setContext, onMount } from "svelte";
+    import { logout } from "../lib/api/auth"
+
+    import TrackList from "./components/TrackList.svelte";
+    import TrackPlayer from "./components/TrackPlayer.svelte";
 
     const app = getContext<{page: AppState }>('app');
 
     let tracklist = $state<Track[]>([])
-
-    let stream = $state({objectUrl: '' as string});
-    setContext('stream', stream);
+    let streamTrack = $state({id: ''});
+    setContext('stream', streamTrack);
 
     async function handleLogout() {
         try {
@@ -39,22 +41,6 @@
 
 <p>88 == Welcome to musicbooru == 88</p>
 
-<div style="display: flex; justify-content: flex-start;" class="track-list">
-    {#each tracklist as track }
-        <TrackEntity trackData={track}/>
-    {/each}
-</div>
-
+<TrackList data={tracklist}/>
+<TrackPlayer track_id={streamTrack.id}/>
 <button onclick={handleLogout}>Logout</button>
-
-<div>
-    <audio src={stream.objectUrl} controls ></audio>
-</div>
-
-<style>
-    .track-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 16px;
-    }
-</style>

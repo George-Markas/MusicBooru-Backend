@@ -5,20 +5,8 @@
 
     let cover = $state<string>('');
     let { trackData } = $props<{ trackData: Track }>();
-
-    const stream = getContext<{objectUrl: string}>('stream');
-    async function getStream(url: string) {
-        try {
-            if (stream.objectUrl) {URL.revokeObjectURL(stream.objectUrl)}
-            const response = await stream_track(url);
-            if (response.ok) {
-                stream.objectUrl = URL.createObjectURL(response.data);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
+    
+    const track = getContext<{id: string}>('stream');
     onMount(async () => {
         try {
             const response = await get_track_art(trackData.id)
@@ -38,7 +26,7 @@
         }});
 </script>
 
-<button onclick={() => getStream(trackData.id)}>
+<button onclick={() => track.id = trackData.id }>
     <img src={cover} alt="cover"/>
     <span>{trackData.title}</span>
 </button>
