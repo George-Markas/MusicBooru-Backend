@@ -1,13 +1,16 @@
 <script lang="ts">
     import { getContext, onDestroy, onMount } from "svelte";
     import { type Track, get_track_art, stream_track } from "../../lib/api/track";
+    import type { ViewMode } from "../../lib/api/common";
 
 
     let cover = $state<string>('');
-    let { trackData } = $props<{ trackData: Track }>();
-    
-    const track = getContext<{id: string}>('stream');
-    onMount(async () => {
+    let { trackData, mode } = $props<{ 
+        mode: ViewMode
+        trackData: Track 
+    }>();
+
+    async function loadArt() {
         try {
             const response = await get_track_art(trackData.id)
             if (response.ok) {
@@ -16,23 +19,34 @@
         } catch (error) {
             console.log(error);
         }
+    }
 
-
+    const track = getContext<{id: string}>('stream');
+    onMount(async () => {
+        if (mode === 'card') {
+            loadArt();
+        }
     })
 
     onDestroy(async () => {
         if (cover) {
+            console.log("Track gone")
             URL.revokeObjectURL(cover);
         }});
 </script>
 
-<button onclick={() => track.id = trackData.id }>
-    <img src={cover} alt="cover"/>
-    <span>{trackData.title}</span>
+<button class:button={mode === 'card'} class:list={mode === 'list'} onclick={() => track.id = trackData.id}>    
+    {#if mode === 'card'}
+        <img src={cover} alt="cover"/>
+        <span>{trackData.title}</span>
+    {:else}
+        <p class="track-title">{trackData.title}</p>
+    {/if}
+    
 </button>
 
 <style>
-    button {
+    .button {
         position: relative;
         padding: 0;
         border: none;
@@ -58,4 +72,20 @@
         color: white;
         text-align: center;
     }
+
+    .list {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: none;
+    border-bottom: 1px solid #eee;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+    font-size: 1rem;
+}
+
+
 </style>

@@ -1,5 +1,6 @@
 export const BASE_URL = 'http://localhost:8080/api';
 
+export type ViewMode = 'card' | 'list';
 export type AppState = 'login' | 'home' | 'playlists' | 'error' | 'loading';
 export type Result<T> = {ok: true, status: number, data: T} | {ok: false, status: number};
  

@@ -1,16 +1,28 @@
 <script lang="ts">
+    import type { ViewMode } from "../../lib/api/common";
     import type { Track } from "../../lib/api/track";
     import TrackEntity from "./TrackEntity.svelte";
 
-    let { data } = $props<{data: Track[]}>()
+    let { data, mode } = $props<{
+        mode: ViewMode
+        data: Track[]
+    }>()
 
 </script>
 
-<div style="display: flex; justify-content: flex-start;" class="track-list">
-    {#each data as track }
-        <TrackEntity trackData={track}/>
+{#if mode === 'card'}
+    <div style="display: flex; justify-content: flex-start;" class="track-list">
+        {#each data as track (track.id)}
+            <TrackEntity trackData={track} mode={mode}/>
+        {/each}
+    </div>
+
+{:else}
+    {#each data as track (track.id)}
+        <TrackEntity trackData={track} mode={mode}/>
     {/each}
-</div>
+{/if}
+
 
 <style>
     .track-list {
