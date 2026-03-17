@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -103,7 +102,7 @@ public class TrackService {
     }
 
     public List<Track> searchTracks(String query) {
-        if (query == null || query.isBlank()) return Collections.emptyList();
+        if (query == null || query.isBlank()) return trackRepository.findAll();
         return trackRepository.searchTracks(query.trim(), QUERY_CHARACTER_LIMIT);
     }
 }
