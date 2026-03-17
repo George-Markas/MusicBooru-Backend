@@ -20,16 +20,24 @@ public interface TrackRepository extends JpaRepository<Track, UUID> {
     Optional<FileNameOnly> findProjectedById(UUID trackId);
 
     @Query(value = """
-            SELECT * FROM track
-            WHERE similarity(COALESCE(title, ''), :query) > 0.2
-               OR similarity(COALESCE(artist, ''), :query) > 0.2
-               OR similarity(COALESCE(album, ''), :query) > 0.2
-            ORDER BY
-                GREATEST(
-                    similarity(COALESCE(title, ''), :query),
-                    similarity(COALESCE(artist, ''), :query),
-                    similarity(COALESCE(album, ''), :query)
-                ) DESC
+            SELECT * FROM (
+                SELECT DISTINCT ON (t.id) t.*,
+                    GREATEST(
+                        word_similarity(:query, COALESCE(t.title, '')),
+                        word_similarity(:query, COALESCE(t.artist, '')),
+                        word_similarity(:query, COALESCE(t.album, ''))
+                    ) AS relevance
+                FROM track t
+                WHERE
+                    t.title  ILIKE '%' || :query || '%'
+                    OR t.artist ILIKE '%' || :query || '%'
+                    OR t.album  ILIKE '%' || :query || '%'
+                    OR word_similarity(:query, COALESCE(t.title, ''))  > 0.3
+                    OR word_similarity(:query, COALESCE(t.artist, '')) > 0.3
+                    OR word_similarity(:query, COALESCE(t.album, ''))  > 0.3
+                ORDER BY t.id
+            ) ranked
+            ORDER BY relevance DESC
             LIMIT :limit
             """, nativeQuery = true)
     List<Track> searchTracks(@Param("query") String query, @Param("limit") int characterLimit);
