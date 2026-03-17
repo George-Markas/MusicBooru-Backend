@@ -1,7 +1,6 @@
 package com.example.musicbooru.auth;
 
 import com.example.musicbooru.exception.GenericException;
-import com.example.musicbooru.model.Role;
 import com.example.musicbooru.model.User;
 import com.example.musicbooru.model.UserAuthView;
 import com.example.musicbooru.repository.UserRepository;
@@ -31,7 +30,7 @@ public class AuthenticationService {
         User user = User.builder()
                 .username(request.username())
                 .password(passwordEncoder.encode(request.password()))
-                .role(Role.USER)
+                .role(request.role())
                 .build();
 
         if (userRepository.existsByUsername(user.getUsername())) {
