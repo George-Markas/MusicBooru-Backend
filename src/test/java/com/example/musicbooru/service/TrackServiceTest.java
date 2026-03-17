@@ -34,7 +34,6 @@ class TrackServiceTest {
     @Mock
     private TrackRepository trackRepository;
 
-    // Inject TrackRepository mocks into TrackService instance
     @InjectMocks
     private TrackService trackService;
 
@@ -49,7 +48,7 @@ class TrackServiceTest {
                 .artist("Test Artist")
                 .album("Test Album")
                 .genre("Test Genre")
-                .year("2026")
+                .year("1970")
                 .fileName("Test Artist - Test Title" + AUDIO_EXTENSION)
                 .build();
     }
