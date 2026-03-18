@@ -144,14 +144,14 @@ public class TrackControllerTest {
     void uploadTrack_returnsCreatedWithTrack() throws Exception {
         when(trackService.addTrack(any())).thenReturn(track);
 
-        MockMultipartFile multipartFile = new MockMultipartFile(
+        MockMultipartFile mockMultipartFile = new MockMultipartFile(
                 "file",
                 "test.m4a",
                 "audio/mp4",
                 "audio-data".getBytes()
         );
 
-        mockMvc.perform(multipart("/api/track").file(multipartFile).with(csrf()))
+        mockMvc.perform(multipart("/api/track").file(mockMultipartFile).with(csrf()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title").value("Test Title"));
     }
@@ -183,27 +183,12 @@ public class TrackControllerTest {
     // --- GET /api/track/{trackId}/art ---
 
     @Test
-    void getArtwork_returnsJpegResource_whenArtworkFileExists() throws Exception {
+    void getArtwork_returnsJpegResource_whenTrackExists() throws Exception {
         when(trackService.trackExists(trackId.toString())).thenReturn(true);
 
         try (MockedStatic<Files> filesMock = mockStatic(Files.class)) {
             // Force the fallback path to avoid UrlResource trying to resolve
             // a real file for Content-Length calculation.
-            filesMock.when(() -> Files.exists(any(Path.class))).thenReturn(false);
-
-            mockMvc.perform(get("/api/track/{trackId}/art", trackId.toString()))
-                    .andExpect(status().isOk())
-                    .andExpect(content().contentType(MediaType.IMAGE_JPEG));
-        }
-    }
-
-    @Test
-    void getArtwork_returnsFallbackResource_whenArtworkFileDoesNotExist() throws Exception {
-        when(trackService.trackExists(trackId.toString())).thenReturn(true);
-
-        try (MockedStatic<Files> filesMock = mockStatic(Files.class)) {
-            // When the artwork file is absent, the controller should still return 200
-            // with JPEG content type, using the cover art placeholder.
             filesMock.when(() -> Files.exists(any(Path.class))).thenReturn(false);
 
             mockMvc.perform(get("/api/track/{trackId}/art", trackId.toString()))
