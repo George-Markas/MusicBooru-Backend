@@ -72,6 +72,7 @@ public class TrackService {
                     .genre(metadataUtils.getGenre())
                     .year(metadataUtils.getYear())
                     .fileName((fileName != null) ? fileName : trackId + AUDIO_EXTENSION)
+                    .duration(metadataUtils.getDuration())
                     .build();
 
             metadataUtils.extractArtwork(String.valueOf(trackId));

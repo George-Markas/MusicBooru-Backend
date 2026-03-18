@@ -16,6 +16,7 @@ CREATE TABLE track
     genre     VARCHAR(255),
     year      VARCHAR(255),
     file_name VARCHAR(255),
+    duration  INTEGER,
     CONSTRAINT pk_track PRIMARY KEY (id)
 );
 

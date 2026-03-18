@@ -20,6 +20,7 @@ public class Track {
     private String album;
     private String genre;
     private String year;
+    private Integer duration; // In seconds
 
     @Column(unique = true)
     private String fileName;

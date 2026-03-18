@@ -50,6 +50,7 @@ class TrackServiceTest {
                 .genre("Test Genre")
                 .year("1970")
                 .fileName("Test Artist - Test Title" + AUDIO_EXTENSION)
+                .duration(180)
                 .build();
     }
 
@@ -157,8 +158,9 @@ class TrackServiceTest {
                             when(mock.getTitle()).thenReturn("Test Title");
                             when(mock.getArtist()).thenReturn("Test Artist");
                             when(mock.getAlbum()).thenReturn("Test Album");
-                            when(mock.getGenre()).thenReturn("Rock");
-                            when(mock.getYear()).thenReturn("2026");
+                            when(mock.getGenre()).thenReturn("Test Genre");
+                            when(mock.getYear()).thenReturn("1970");
+                            when(mock.getDuration()).thenReturn(180);
                         });
 
                 MockedStatic<Files> filesMock = Mockito.mockStatic(Files.class)
@@ -203,6 +205,7 @@ class TrackServiceTest {
                             when(mock.getAlbum()).thenReturn(null);
                             when(mock.getGenre()).thenReturn(null);
                             when(mock.getYear()).thenReturn(null);
+                            when(mock.getDuration()).thenReturn(0);
                         });
 
                 MockedStatic<Files> filesMock = Mockito.mockStatic(Files.class)
@@ -245,8 +248,9 @@ class TrackServiceTest {
                             when(mock.getTitle()).thenReturn("Test Title");
                             when(mock.getArtist()).thenReturn("Test Artist");
                             when(mock.getAlbum()).thenReturn("Test Album");
-                            when(mock.getGenre()).thenReturn("Rock");
-                            when(mock.getYear()).thenReturn("2026");
+                            when(mock.getGenre()).thenReturn("Test Genre");
+                            when(mock.getYear()).thenReturn("1970");
+                            when(mock.getDuration()).thenReturn(180);
                         });
 
                 MockedStatic<Files> filesMock = Mockito.mockStatic(Files.class)
