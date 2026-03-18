@@ -32,15 +32,20 @@
         }
     }
 
+    function handleInputMulti(e: Event) {
+        const query = (e.target as HTMLInputElement).value;
+
+        if (query === 'title') {
+            view.mode = 'Track';
+        }
+
+        handleSort(query);
+    }
+
     function handleInputSearch(e: Event) {
         const query = (e.target as HTMLInputElement).value;
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout( () => {handleSearch(query)}, 300);
-    }
-
-    function handleInputMulti(e: Event) {
-        const query = (e.target as HTMLInputElement).value;
-        handleSort(query);
     }
 
 </script>
@@ -60,6 +65,6 @@
         <option value="album">  Album  </option>
     </select>
 
-    <button onclick={() => view.mode='card'}>card</button>
-    <button onclick={() => view.mode='list'}>list</button>
+    <button onclick={() => {view.mode='Album'; handleSort('album')}}>Album</button>
+    <button onclick={() => view.mode='Track'}>Track</button>
 </div>

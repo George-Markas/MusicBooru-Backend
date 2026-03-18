@@ -1,6 +1,6 @@
 <script lang="ts">
     import { type AppState, type ViewMode } from "../lib/api/common";
-    import { type Track, get_tracks, sort_tracks, stream_track} from "../lib/api/track";
+    import { type Track, get_tracks} from "../lib/api/track";
 
     import { getContext, setContext, onMount } from "svelte";
     import { logout } from "../lib/api/auth"
@@ -8,18 +8,31 @@
     import TrackList from "./components/TrackList.svelte";
     import TrackPlayer from "./components/TrackPlayer.svelte";
     import SearchBar from "./components/SearchBar.svelte";
+    import AlbumList from "./components/AlbumList.svelte";
 
     const app = getContext<{page: AppState }>('app');
 
     let tracks = $state({list: [] as Track[]})
     setContext('tracklist', tracks);
 
+    let albums = $derived(
+        Object.values(
+            tracks.list.reduce((acc, track) => {
+                (acc[track.album] ??= []).push(track);
+                return acc;
+            }, {} as Record<string, Track[]>)
+        )
+    );
+
     let streamTrack = $state({id: ''});
     setContext('stream', streamTrack);
 
     let view = $state({mode: 'card' as ViewMode});
     setContext('view', view);
-    
+
+    // let sort = $state({mode: 'title' as SortMode})
+    // setContext('sort', sort);
+
     async function handleLogout() {
         try {
             const response = await logout();
@@ -41,14 +54,18 @@
         } catch (error) {
             console.error(error);
         }
-    type ViewMode = 'card' | 'list'
     });
 
 </script>
 
 <p>88 == Welcome to musicbooru == 88</p>
 
-<TrackList data={tracks.list} mode={view.mode}/>
+{#if view.mode === 'Album'}
+    <AlbumList albums={albums}/>
+{:else}   
+    <TrackList data={tracks.list} mode={view.mode}/>
+{/if}
+
 <TrackPlayer track_id={streamTrack.id}/>
 <SearchBar/>
 <button onclick={handleLogout}>Logout</button>

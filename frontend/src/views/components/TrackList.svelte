@@ -13,13 +13,13 @@
 {#if mode === 'card'}
     <div style="display: flex; justify-content: flex-start;" class="track-list">
         {#each data as track (track.id)}
-            <TrackEntity trackData={track} mode={mode}/>
+            <TrackEntity trackData={track}/>
         {/each}
     </div>
 
 {:else}
     {#each data as track (track.id)}
-        <TrackEntity trackData={track} mode={mode}/>
+        <TrackEntity trackData={track}/>
     {/each}
 {/if}
 
