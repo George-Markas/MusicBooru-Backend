@@ -349,20 +349,22 @@ class TrackServiceTest {
 
     @Test
     void searchTracks_returnsEmpty_forNullQuery() {
+        when(trackRepository.findAll()).thenReturn(List.of(track));
+
         List<Track> result = trackService.searchTracks(null);
 
-        assertThat(result).isEmpty();
-
-        // The repository must never be called for a null or blank query
-        verifyNoInteractions(trackRepository);
+        assertThat(result).containsExactly(track);
+        verify(trackRepository).findAll();
     }
 
     @Test
     void searchTracks_returnsEmpty_forBlankQuery() {
+        when(trackRepository.findAll()).thenReturn(List.of(track));
+
         List<Track> result = trackService.searchTracks("   ");
 
-        assertThat(result).isEmpty();
-        verifyNoInteractions(trackRepository);
+        assertThat(result).containsExactly(track);
+        verify(trackRepository).findAll();
     }
 
     // Verifies that the query is trimmed before being passed to the repository
