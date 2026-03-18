@@ -61,6 +61,20 @@ public class PlaylistService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<Track> getTracksByPlaylistId(String playlistId, User requester) {
+        Playlist playlist = playlistRepository.findByIdWithTracks(UUID.fromString(playlistId))
+                .orElseThrow(() -> new ResourceNotFoundException("Playlist '" + playlistId + "' not found"));
+
+        if (!playlist.getOwner().getId().equals(requester.getId())) {
+            throw new GenericException("You do not own this playlist", HttpStatus.UNAUTHORIZED);
+        }
+
+        return playlist.getEntries().stream()
+                .map(PlaylistEntry::getTrack)
+                .toList();
+    }
+
     public Playlist createPlaylist(User owner, String name) {
         Playlist playlist = Playlist.builder()
                 .name(name)

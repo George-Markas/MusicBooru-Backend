@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface PlaylistRepository extends JpaRepository<Playlist, UUID> {
@@ -17,4 +18,12 @@ public interface PlaylistRepository extends JpaRepository<Playlist, UUID> {
             WHERE p.owner = :owner
             """)
     List<Playlist> findByOwner(@Param("owner") User owner);
+
+    @Query("""
+        SELECT p FROM Playlist p
+        JOIN FETCH p.entries e
+        JOIN FETCH e.track
+        WHERE p.id = :playlistId
+        """)
+    Optional<Playlist> findByIdWithTracks(@Param("playlistId") UUID playlistId);
 }

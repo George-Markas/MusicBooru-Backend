@@ -117,4 +117,8 @@ public class MetadataUtils {
             return "";
         }
     }
+
+    public int getDuration() {
+        return audioFile.getAudioHeader().getTrackLength();
+    }
 }

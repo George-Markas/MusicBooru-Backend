@@ -49,18 +49,17 @@ public class PlaylistServiceTest {
     @InjectMocks
     private PlaylistService playlistService;
 
-    private final UUID playlistId = UUID.fromString("00000000-0000-0000-0000-000000000001");
-    private final UUID trackId = UUID.fromString("00000000-0000-0000-0000-000000000002");
-    private final UUID entryId = UUID.fromString("00000000-0000-0000-0000-000000000003");
-    private final UUID ownerId = UUID.fromString("00000000-0000-0000-0000-000000000004");
-    private final UUID otherId = UUID.fromString("00000000-0000-0000-0000-000000000005");
-
+    private final UUID ownerId = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    private final UUID otherUserId = UUID.fromString("00000000-0000-0000-0000-000000000002");
+    private final UUID trackId = UUID.fromString("00000000-0000-0000-0000-000000000003");
+    private final UUID entryId = UUID.fromString("00000000-0000-0000-0000-000000000005");
+    private final UUID playlistId = UUID.fromString("00000000-0000-0000-0000-000000000007");
 
     private User owner;
     private User otherUser;
     private Track track;
-    private Playlist playlist;
     private PlaylistEntry entry;
+    private Playlist playlist;
 
     @BeforeEach
     void setUp() {
@@ -70,24 +69,12 @@ public class PlaylistServiceTest {
 
         // A different user who does not own the playlist
         otherUser = new User();
-        otherUser.setId(otherId);
+        otherUser.setId(otherUserId);
         otherUser.setRole(Role.USER);
 
         track = Track.builder()
                 .id(trackId)
                 .title("Test Title")
-                .artist("Test Artist")
-                .album("Test Album")
-                .genre("Test Genre")
-                .year("1970")
-                .fileName("Test Artist - Test Title" + AUDIO_EXTENSION)
-                .build();
-
-        playlist = Playlist.builder()
-                .id(playlistId)
-                .name("Test Playlist")
-                .owner(owner)
-                .entries(new ArrayList<>())
                 .build();
 
         entry = PlaylistEntry.builder()
@@ -95,6 +82,13 @@ public class PlaylistServiceTest {
                 .playlist(playlist)
                 .track(track)
                 .addedOn(Instant.now())
+                .build();
+
+        playlist = Playlist.builder()
+                .id(playlistId)
+                .name("Test Playlist")
+                .owner(owner)
+                .entries(new ArrayList<>())
                 .build();
     }
 
@@ -112,7 +106,7 @@ public class PlaylistServiceTest {
     @Test
     void playlistExists_returnsTrue_whenRequesterIsAdmin() {
         User admin = new User();
-        admin.setId(otherId);
+        admin.setId(otherUserId);
         admin.setRole(Role.ADMIN);
 
         when(playlistRepository.findById(playlistId)).thenReturn(Optional.of(playlist));
@@ -155,15 +149,72 @@ public class PlaylistServiceTest {
         assertThat(result).isEmpty();
     }
 
+    // --- getTracksByPlaylistId ---
+
+    @Test
+    void getTracksByPlaylistId_shouldReturnTracks_whenRequesterIsOwner() {
+        // We're using a local Playlist object as to avoid mutating the member Playlist
+        // object's list, which would cause an exception, and we need it to be empty for
+        // other tests down the line.
+        Playlist playlist = Playlist.builder()
+                .id(UUID.fromString("00000000-0000-0000-0000-000000000008"))
+                .owner(owner)
+                .build();
+
+        Track otherTrack = Track.builder()
+                .id(UUID.fromString("00000000-0000-0000-0000-000000000009"))
+                .title("Other Test Title")
+                .build();
+
+        PlaylistEntry otherEntry = PlaylistEntry.builder()
+                .id(UUID.fromString("00000000-0000-0000-0000-000000000010"))
+                .playlist(playlist)
+                .track(otherTrack)
+                .addedOn(Instant.now())
+                .build();
+
+        playlist.setEntries(List.of(entry, otherEntry));
+
+        when(playlistRepository.findByIdWithTracks(playlist.getId())).thenReturn(Optional.of(playlist));
+
+        List<Track> result = playlistService.getTracksByPlaylistId(playlist.getId().toString(), owner);
+
+        assertThat(result).hasSize(2);
+        assertThat(result).containsExactly(track, otherTrack);
+        verify(playlistRepository).findByIdWithTracks(playlist.getId());
+    }
+
+    @Test
+    void getTracksByPlaylistId_shouldThrowResourceNotFoundException_whenPlaylistDoesNotExist() {
+        when(playlistRepository.findByIdWithTracks(playlistId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> playlistService.getTracksByPlaylistId(playlistId.toString(), owner))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining(playlistId.toString());
+
+        verify(playlistRepository).findByIdWithTracks(playlistId);
+    }
+
+    @Test
+    void getTracksByPlaylistId_shouldThrowGenericException_whenRequesterIsNotOwner() {
+        when(playlistRepository.findByIdWithTracks(playlistId)).thenReturn(Optional.of(playlist));
+
+        assertThatThrownBy(() -> playlistService.getTracksByPlaylistId(playlistId.toString(), otherUser))
+                .isInstanceOf(GenericException.class)
+                .hasMessageContaining("You do not own this playlist");
+
+        verify(playlistRepository).findByIdWithTracks(playlistId);
+    }
+
     // --- createPlaylist ---
 
     @Test
     void createPlaylist_savesAndReturnsPlaylist() {
         when(playlistRepository.save(any(Playlist.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        Playlist result = playlistService.createPlaylist(owner, "My Playlist");
+        Playlist result = playlistService.createPlaylist(owner, "New Test Playlist");
 
-        assertThat(result.getName()).isEqualTo("My Playlist");
+        assertThat(result.getName()).isEqualTo("New Test Playlist");
         assertThat(result.getOwner()).isEqualTo(owner);
         verify(playlistRepository).save(any(Playlist.class));
     }

@@ -6,6 +6,7 @@ import com.example.musicbooru.dto.PlaylistResponse;
 import com.example.musicbooru.exception.GenericException;
 import com.example.musicbooru.exception.ResourceNotFoundException;
 import com.example.musicbooru.model.Playlist;
+import com.example.musicbooru.model.Track;
 import com.example.musicbooru.model.User;
 import com.example.musicbooru.service.PlaylistService;
 import lombok.AllArgsConstructor;
@@ -44,6 +45,14 @@ public class PlaylistController {
     @GetMapping
     public ResponseEntity<List<PlaylistResponse>> getPlaylists(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(playlistService.getPlaylistsByOwner(user));
+    }
+
+    @GetMapping("/{playlistId}/tracks")
+    public ResponseEntity<List<Track>> getPlaylistTracks(
+            @PathVariable String playlistId,
+            @AuthenticationPrincipal User user) {
+
+        return ResponseEntity.ok(playlistService.getTracksByPlaylistId(playlistId, user));
     }
 
     @PostMapping("/{playlistId}/track")
