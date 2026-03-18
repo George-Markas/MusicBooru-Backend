@@ -338,6 +338,7 @@ class TrackServiceTest {
     }
 
     // --- searchTracks ---
+
     @Test
     void searchTracks_returnsResults_forValidQuery() {
         when(trackRepository.searchTracks("test", QUERY_CHARACTER_LIMIT)).thenReturn(List.of(track));
