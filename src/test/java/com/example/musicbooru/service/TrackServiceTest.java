@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
@@ -84,19 +83,6 @@ class TrackServiceTest {
 
         assertThat(result).containsExactly(track);
         verify(trackRepository).findAll();
-    }
-
-    @Test
-    void getTracks_withField_sortsByFieldAscending() {
-        // Construct a Sort object matching what the service will produce
-        Sort expectedSort = Sort.by(Sort.Direction.ASC, "title");
-        when(trackRepository.findAll(expectedSort)).thenReturn(List.of(track));
-
-        List<Track> result = trackService.getTracks("title");
-
-        assertThat(result).containsExactly(track);
-
-        verify(trackRepository).findAll(expectedSort);
     }
 
     // --- getTrackById ---

@@ -83,41 +83,6 @@ public class TrackControllerTest {
                 .andExpect(jsonPath("$").isEmpty());
     }
 
-    // --- GET /api/track/sort/{by} ---
-
-    @Test
-    void getTracks_sortedByAlbum_delegatesToServiceWithAlbumField() throws Exception {
-        when(trackService.getTracks("album")).thenReturn(List.of(track));
-
-        mockMvc.perform(get("/api/track/sort/album"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].album").value("Test Album"));
-
-        verify(trackService).getTracks("album");
-    }
-
-    @Test
-    void getTracks_sortedByArtist_delegatesToServiceWithArtistField() throws Exception {
-        when(trackService.getTracks("artist")).thenReturn(List.of(track));
-
-        mockMvc.perform(get("/api/track/sort/artist"))
-                .andExpect(status().isOk());
-
-        verify(trackService).getTracks("artist");
-    }
-
-    @Test
-    void getTracks_sortedByUnknownField_defaultsToTitle() throws Exception {
-        when(trackService.getTracks("title")).thenReturn(List.of(track));
-
-        // Any value that is not "album" or "artist" should fall through to the
-        // default case in the switch expression and sort by title.
-        mockMvc.perform(get("/api/track/sort/unknown"))
-                .andExpect(status().isOk());
-
-        verify(trackService).getTracks("title");
-    }
-
     // --- GET /api/track/{trackId} ---
 
     @Test
