@@ -34,15 +34,6 @@ public class TrackController {
         return ResponseEntity.ok(trackService.getTracks());
     }
 
-    @GetMapping("/sort/{by}")
-    public ResponseEntity<List<Track>> getTracks(@PathVariable String by) {
-        return switch (by) {
-            case "album" -> ResponseEntity.ok(trackService.getTracks("album"));
-            case "artist" -> ResponseEntity.ok(trackService.getTracks("artist"));
-            default -> ResponseEntity.ok(trackService.getTracks("title"));
-        };
-    }
-
     @GetMapping("/{trackId}")
     public ResponseEntity<Track> getTrack(@PathVariable String trackId) {
         Track track = trackService.getTrackById(trackId)
