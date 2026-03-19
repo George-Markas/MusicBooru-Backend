@@ -1,5 +1,6 @@
 package com.example.musicbooru.auth;
 
+import com.example.musicbooru.dto.UserInfoResponse;
 import com.example.musicbooru.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -15,12 +16,12 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @GetMapping
-    public ResponseEntity<?> getUserRole(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(authenticationService.getUserRole(user));
+    public ResponseEntity<UserInfoResponse> getUserInfo(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(authenticationService.getUserInfo(user));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
         AuthenticationResponse authenticationResponse = authenticationService.register(request);
         return ResponseEntity.status(authenticationResponse.status())
                 .header(HttpHeaders.SET_COOKIE, authenticationResponse.cookieString())
@@ -28,7 +29,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest request) {
+    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
         AuthenticationResponse authenticationResponse = authenticationService.authenticate(request);
         return ResponseEntity.status(authenticationResponse.status())
                 .header(HttpHeaders.SET_COOKIE, authenticationResponse.cookieString())
@@ -36,7 +37,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout() {
+    public ResponseEntity<AuthenticationResponse> logout() {
         AuthenticationResponse authenticationResponse = authenticationService.logout();
         return ResponseEntity.status(authenticationResponse.status())
                 .header(HttpHeaders.SET_COOKIE, authenticationResponse.cookieString())

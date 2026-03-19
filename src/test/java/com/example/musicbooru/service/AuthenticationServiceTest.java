@@ -1,6 +1,7 @@
 package com.example.musicbooru.service;
 
 import com.example.musicbooru.auth.*;
+import com.example.musicbooru.dto.UserInfoResponse;
 import com.example.musicbooru.exception.GenericException;
 import com.example.musicbooru.model.Role;
 import com.example.musicbooru.model.User;
@@ -64,13 +65,15 @@ public class AuthenticationServiceTest {
         authenticationRequest = new AuthenticationRequest("testuser", "plain-password");
     }
 
-    // --- getUserRole ---
+    // --- getUserInfo ---
 
     @Test
-    void getUserRole_returnsUserRole() {
-        Role result = authenticationService.getUserRole(user);
+    void getUserInfo_returnsUserInfo() {
+        UserInfoResponse result = authenticationService.getUserInfo(user);
 
-        assertThat(result).isEqualTo(Role.USER);
+        assertThat(result).isEqualTo(
+                new UserInfoResponse("testuser", Role.USER)
+        );
         // No repository interaction should occur; this is a pure delegation to the model
         verifyNoInteractions(userRepository, authViewRepository, jwtService, authenticationManager);
     }
