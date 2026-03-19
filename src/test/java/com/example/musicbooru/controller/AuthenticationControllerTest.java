@@ -3,6 +3,7 @@ package com.example.musicbooru.controller;
 import com.example.musicbooru.auth.AuthenticationController;
 import com.example.musicbooru.auth.AuthenticationService;
 import com.example.musicbooru.auth.JwtService;
+import com.example.musicbooru.dto.UserInfoResponse;
 import com.example.musicbooru.model.Role;
 import com.example.musicbooru.model.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +36,6 @@ class AuthenticationControllerTest {
     private JwtService jwtService;
 
     private User user;
-    private User admin;
 
     @BeforeEach
     void setUp() {
@@ -43,35 +43,21 @@ class AuthenticationControllerTest {
         user.setId(UUID.fromString("00000000-0000-0000-0000-000000000001"));
         user.setUsername("testuser");
         user.setRole(Role.USER);
-
-        admin = new User();
-        admin.setId(UUID.fromString("00000000-0000-0000-0000-000000000002"));
-        admin.setUsername("testadmin");
-        admin.setRole(Role.ADMIN);
     }
 
     // --- GET /api/auth ---
 
     @Test
-    void getUserRole_returnsOkWithUserRole() throws Exception {
-        when(authenticationService.getUserRole(any(User.class))).thenReturn(Role.USER);
+    void getUserInfo_returnsOkWithUserInfo() throws Exception {
+        when(authenticationService.getUserInfo(any(User.class)))
+                .thenReturn(new UserInfoResponse("testuser", Role.USER));
 
         mockMvc.perform(get("/api/auth")
                         .with(user(user))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value("USER"));
-    }
-
-    @Test
-    void getUserRole_returnsOkWithAdminRole() throws Exception {
-        when(authenticationService.getUserRole(any(User.class))).thenReturn(Role.ADMIN);
-
-        mockMvc.perform(get("/api/auth")
-                        .with(user(admin))
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value("ADMIN"));
+                .andExpect(jsonPath("$.username").value("testuser"))
+                .andExpect(jsonPath("$.role").value("USER"));
     }
 
     /* TODO Test the rest of the controller methods. I genuinely could not figure out how to make
