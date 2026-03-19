@@ -1,13 +1,13 @@
 <script lang="ts">
     import { untrack } from "svelte";
-    import { stream_track } from "../../lib/api/track";
+    import { streamTrack } from "../../lib/api/track";
 
-    let {track_id} = $props<string>();
+    let {trackId} = $props<string>();
     let objectURL = $state<string>('')
 
     async function getStream(id: string) {
         try {
-            const response = await stream_track(id);
+            const response = await streamTrack(id);
             if (response.ok) {
                 untrack(() => {
                     objectURL = URL.createObjectURL(response.data);
@@ -19,7 +19,8 @@
     }
 
     $effect(() => {
-        getStream(track_id);
+        if (trackId === '') return;
+        getStream(trackId);
 
         return () => {
             untrack( () => {
@@ -30,5 +31,5 @@
 </script>
 
 <div>
-    <audio src={objectURL} controls></audio>
+    <audio src={objectURL} controls autoplay></audio>
 </div>

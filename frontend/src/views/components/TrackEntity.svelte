@@ -10,7 +10,7 @@
 
 </script>
 
-<button class='list' onclick={() => track.id = trackData.id}>    
+<button class='list' ondblclick={() => track.id = trackData.id}>    
     <p class="track-title">{trackData.title}</p>
 </button>
 

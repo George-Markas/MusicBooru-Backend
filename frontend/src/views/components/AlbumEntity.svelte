@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { get_track_art, type Track } from "../../lib/api/track";
+    import { getTrackArt, type Track } from "../../lib/api/track";
     import { getContext, onDestroy, onMount } from "svelte";
     import TrackList from "./TrackList.svelte";
     
@@ -11,7 +11,7 @@
 
     async function loadArt() {
         try {
-            const response = await get_track_art(tracks[0].id)
+            const response = await getTrackArt(tracks[0].id)
             if (response.ok) {
                 cover = URL.createObjectURL(response.data);
             }

@@ -11,7 +11,8 @@
 
     async function handleSubmit(event: Event) {
         event.preventDefault();
-
+        username = username.trim();
+        password = password.trim();
         try {
             const response = await authenticate({username, password});
             if (response.ok) {app.page = 'home'; console.log(response.data);}

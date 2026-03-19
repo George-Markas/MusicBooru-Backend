@@ -10,7 +10,7 @@ export type Track = {
     filename: string
 }
 
-export async function get_tracks(): Promise<Result<Track[]>> {
+export async function getTracks(): Promise<Result<Track[]>> {
     const path = `track`
 
     const response = await api<Track[]>(path, {
@@ -20,7 +20,7 @@ export async function get_tracks(): Promise<Result<Track[]>> {
     return response;
 }
 
-export async function search_tracks(query: string): Promise<Result<Track[]>> {
+export async function searchTracks(query: string): Promise<Result<Track[]>> {
     const path = `track/search`
 
     const response = await api<Track[]>(path, {
@@ -30,7 +30,7 @@ export async function search_tracks(query: string): Promise<Result<Track[]>> {
     return response;
 }
 
-export async function sort_tracks(sortOption: string): Promise<Result<Track[]>> {
+export async function sortTracks(sortOption: string): Promise<Result<Track[]>> {
     const path = `track/sort/${sortOption}`
 
     const response = await api<Track[]>(path, {
@@ -40,7 +40,7 @@ export async function sort_tracks(sortOption: string): Promise<Result<Track[]>> 
     return response;
 }
 
-export async function get_track(id: string): Promise<Result<Track>> {
+export async function getTrack(id: string): Promise<Result<Track>> {
     const path = `track/${id}`
 
     const response = await api<Track>(path, {
@@ -50,7 +50,7 @@ export async function get_track(id: string): Promise<Result<Track>> {
     return response;
 }
 
-export async function get_track_art(id: string): Promise<Result<Blob>> {
+export async function getTrackArt(id: string): Promise<Result<Blob>> {
     const path = `track/${id}/art`
 
     const response = await api<Blob>(path, {
@@ -61,7 +61,7 @@ export async function get_track_art(id: string): Promise<Result<Blob>> {
     return response;
 }
 
-export async function stream_track(id: string): Promise<Result<Blob>> {
+export async function streamTrack(id: string): Promise<Result<Blob>> {
     const path = `stream/${id}`
 
     const response = await api<Blob>(path, {

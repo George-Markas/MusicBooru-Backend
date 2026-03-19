@@ -1,6 +1,6 @@
 <script lang="ts">
     import Login from './views/Login.svelte'
-    import { get_tracks } from './lib/api/track';
+    import { getTracks } from './lib/api/track';
     import { type AppState } from './lib/api/common';
 
     import { onMount, setContext } from 'svelte';
@@ -13,7 +13,7 @@
 
     onMount( async () => {
         try {
-            const response = await get_tracks();
+            const response = await getTracks();
             if (response.ok) {app.page = 'home'}
             else {app.page = 'login'; console.log("You are not the father!");}
         } catch (error) {
@@ -23,8 +23,8 @@
 
 </script>
 
-{#if app.page == 'login'}
+{#if app.page === 'login'}
     <Login/>
-{:else if app.page == 'home' }
+{:else if app.page === 'home' }
     <Home/>
 {/if}

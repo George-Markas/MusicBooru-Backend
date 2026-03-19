@@ -1,7 +1,7 @@
 export const BASE_URL = 'http://localhost:8080/api';
 
-export type SortMode = 'title' | 'artist' | 'album'
-export type ViewMode = 'Album' | 'Track';
+export type SortMode = 'album' | 'title' | 'artist';
+export type ViewMode = 'Album' | 'Track'; 
 export type AppState = 'login' | 'home' | 'playlists' | 'error' | 'loading';
 export type Result<T> = {ok: true, status: number, data: T} | {ok: false, status: number};
  
@@ -11,7 +11,8 @@ export async function api<T>(
     extras?: { params?: string, as?: 'json' | 'blob' }
 ) : Promise<Result<T>> {
 
-    const query = extras?.params ? `?query=${encodeURIComponent(extras.params)}` : '';
+    const hasExtras = extras?.params !== undefined; 
+    const query = hasExtras ? `?query=${encodeURIComponent(extras.params as string)}` : '';
 
     const response = await fetch(`${BASE_URL}/${url}${query}`, {
             credentials: 'include',

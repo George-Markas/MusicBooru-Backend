@@ -1,6 +1,6 @@
 <script lang="ts">
     import { type AppState, type ViewMode } from "../lib/api/common";
-    import { type Track, get_tracks} from "../lib/api/track";
+    import { type Track, getTracks} from "../lib/api/track";
 
     import { getContext, setContext, onMount } from "svelte";
     import { logout } from "../lib/api/auth"
@@ -27,11 +27,8 @@
     let streamTrack = $state({id: ''});
     setContext('stream', streamTrack);
 
-    let view = $state({mode: 'card' as ViewMode});
+    let view = $state({mode: 'Track' as ViewMode});
     setContext('view', view);
-
-    // let sort = $state({mode: 'title' as SortMode})
-    // setContext('sort', sort);
 
     async function handleLogout() {
         try {
@@ -44,7 +41,7 @@
 
     onMount( async () => {
         try {
-            const response = await get_tracks();
+            const response = await getTracks();
             if (response.ok) {
                 tracks.list = response.data
             } else {
@@ -59,13 +56,12 @@
 </script>
 
 <p>88 == Welcome to musicbooru == 88</p>
-
+<SearchBar/>
+<button onclick={handleLogout}>Logout</button>
 {#if view.mode === 'Album'}
     <AlbumList albums={albums}/>
 {:else}   
     <TrackList data={tracks.list} mode={view.mode}/>
 {/if}
 
-<TrackPlayer track_id={streamTrack.id}/>
-<SearchBar/>
-<button onclick={handleLogout}>Logout</button>
+<TrackPlayer trackId={streamTrack.id}/>
