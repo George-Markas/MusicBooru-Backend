@@ -208,7 +208,7 @@ public class AuthenticationServiceTest {
         assertThat(result.status()).isEqualTo(HttpStatus.OK);
         assertThat(result.message()).isEqualTo("Logged out");
         assertThat(result.cookieString()).isEqualTo("logout-cookie-string");
-        // No repository interaction should occur during logout.
+        // No repository interaction should occur during logout
         verifyNoInteractions(userRepository, authViewRepository, authenticationManager);
     }
 }
