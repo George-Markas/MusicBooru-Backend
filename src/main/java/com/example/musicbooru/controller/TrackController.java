@@ -48,6 +48,14 @@ public class TrackController {
         return ResponseEntity.status(HttpStatus.CREATED).body(track);
     }
 
+    @PostMapping("/batch")
+    public ResponseEntity<List<Track>> uploadTracks(@RequestParam("file") List<MultipartFile> files) {
+        if (files.size() > 32) return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).build();
+        List<Track> tracks = trackService.addTracks(files);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(tracks);
+    }
+
     @DeleteMapping("/{trackId}")
     public ResponseEntity<?> deleteTrack(@PathVariable String trackId) {
         trackService.removeTrack(trackId);
@@ -76,16 +84,6 @@ public class TrackController {
     public ResponseEntity<List<Track>> searchTracks(@RequestParam String query) {
         List<Track> results = trackService.searchTracks(query);
         return ResponseEntity.ok(results);
-    }
-
-    @Profile("dev")
-    @PostMapping("/batch")
-    public ResponseEntity<String> uploadTracks(@RequestParam("file") List<MultipartFile> files) {
-        for (MultipartFile file : files) {
-            trackService.addTrack(file);
-        }
-
-        return ResponseEntity.ok(files.size() + " tracks uploaded");
     }
 
     @Profile("dev")
