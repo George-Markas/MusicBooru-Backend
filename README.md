@@ -5,6 +5,10 @@ MusicBooru is a web app for streaming music over the network. For now, only MPEG
 **This project is still very much work in progress.** It was initially conceived for the "Special Topics
 in Software Engineering" course.
 
+> [!NOTE]  
+> This is the **backend** portion of the app. The frontend can be found 
+> [here](https://github.com/George-Markas/MusicBooru-Frontend).
+
 ## Build and run
 MusicBooru has the following dependencies:
 - Java 21
