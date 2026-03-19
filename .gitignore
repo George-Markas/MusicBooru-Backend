@@ -32,6 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 
+# Temporary
+/frontend
+
 /musicbooru/
 /sample_library/
 /test_requests/
