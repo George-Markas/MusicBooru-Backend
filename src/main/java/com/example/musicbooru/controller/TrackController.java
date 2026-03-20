@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static com.example.musicbooru.util.Commons.*;
 
@@ -74,6 +76,7 @@ public class TrackController {
 
             return ResponseEntity.ok()
                     .contentType(MediaType.IMAGE_JPEG)
+                    .cacheControl(CacheControl.maxAge(7, TimeUnit.DAYS).cachePublic())
                     .body(resource);
         } catch (MalformedURLException e) {
             throw new GenericException("Could not fetch artwork");
