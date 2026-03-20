@@ -24,7 +24,6 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
         AuthenticationResponse authenticationResponse = authenticationService.register(request);
         return ResponseEntity.status(authenticationResponse.status())
-                .header(HttpHeaders.SET_COOKIE, authenticationResponse.cookieString())
                 .body(authenticationResponse);
     }
 
