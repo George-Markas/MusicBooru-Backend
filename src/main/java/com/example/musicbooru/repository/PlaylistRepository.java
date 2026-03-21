@@ -14,16 +14,16 @@ public interface PlaylistRepository extends JpaRepository<Playlist, UUID> {
     @Query(value = """
             SELECT DISTINCT p
             FROM Playlist p
-                     LEFT JOIN FETCH p.entries e LEFT JOIN FETCH e.track
+            LEFT JOIN FETCH p.entries e LEFT JOIN FETCH e.track
             WHERE p.owner = :owner
             """)
     List<Playlist> findByOwner(@Param("owner") User owner);
 
     @Query("""
-        SELECT p FROM Playlist p
-        JOIN FETCH p.entries e
-        JOIN FETCH e.track
-        WHERE p.id = :playlistId
-        """)
+            SELECT p FROM Playlist p
+            LEFT JOIN FETCH p.entries e
+            LEFT JOIN FETCH e.track
+            WHERE p.id = :playlistId
+            """)
     Optional<Playlist> findByIdWithTracks(@Param("playlistId") UUID playlistId);
 }
